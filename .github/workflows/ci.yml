@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.12']
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+      - name: Install dependencies from lockfile
+        run: |
+          uv venv --python ${{ matrix.python-version }}
+          uv sync
+          uv pip install pytest
+      - name: Run test suite
+        run: uv run --no-sync pytest tests/ -q --tb=short
+        env:
+          PAPER_SEARCH_MCP_UNPAYWALL_EMAIL: ci@example.com
