@@ -2,7 +2,6 @@ from typing import List, Optional
 from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
-import time
 import random
 from ..paper import Paper
 from ..utils import extract_doi
