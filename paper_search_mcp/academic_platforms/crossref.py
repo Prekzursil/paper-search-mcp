@@ -3,7 +3,6 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime
 import requests
 import time
-import random
 from ..paper import Paper
 from .base import PaperSource
 import logging
@@ -341,7 +340,7 @@ if __name__ == "__main__":
         print("\nTesting PDF download functionality...")
         paper_id = papers[0].doi
         try:
-            pdf_path = searcher.download_pdf(paper_id, "./downloads")
+            searcher.download_pdf(paper_id, "./downloads")
         except NotImplementedError as e:
             print(f"Expected error: {e}")
     

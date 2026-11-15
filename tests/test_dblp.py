@@ -1,6 +1,5 @@
 # tests/test_dblp.py
 import unittest
-import os
 import requests
 from paper_search_mcp.academic_platforms.dblp import DBLPSearcher
 
@@ -15,7 +14,7 @@ def check_api_accessible():
             timeout=10
         )
         return response.status_code == 200
-    except:
+    except Exception:
         return False
 
 
@@ -45,7 +44,7 @@ class TestDBLPSearcher(unittest.TestCase):
             print(f"   URL: {paper.url}")
             print()
 
-        self.assertTrue(len(papers) > 0)
+        self.assertGreater(len(papers), 0)
         if papers:
             self.assertTrue(papers[0].title)
             self.assertEqual(papers[0].source, 'dblp')
@@ -67,7 +66,7 @@ class TestDBLPSearcher(unittest.TestCase):
                 if year:
                     print(f"Paper '{paper.title}' published in {year}")
 
-        self.assertTrue(len(papers) >= 0)  # May return 0 if no papers match
+        self.assertGreaterEqual(len(papers), 0)  # May return 0 if no papers match
 
     def test_search_with_author_filter(self):
         if not self.api_accessible:
@@ -85,7 +84,7 @@ class TestDBLPSearcher(unittest.TestCase):
                 authors_str = ', '.join(paper.authors)
                 print(f"Paper '{paper.title}' by {authors_str}")
 
-        self.assertTrue(len(papers) >= 0)
+        self.assertGreaterEqual(len(papers), 0)
 
     def test_search_with_venue_filter(self):
         if not self.api_accessible:
@@ -103,7 +102,7 @@ class TestDBLPSearcher(unittest.TestCase):
                 venue = paper.extra.get('venue', '')
                 print(f"Paper '{paper.title}' published at {venue}")
 
-        self.assertTrue(len(papers) >= 0)
+        self.assertGreaterEqual(len(papers), 0)
 
     def test_download_pdf_not_supported(self):
         """Test that PDF download raises NotImplementedError"""
@@ -135,7 +134,7 @@ class TestDBLPSearcher(unittest.TestCase):
             print(f"Query '{query}': found {len(papers)} papers")
             if papers:
                 print(f"  First paper: {papers[0].title}")
-            self.assertTrue(len(papers) >= 0)
+            self.assertGreaterEqual(len(papers), 0)
 
     def test_parse_dblp_hit_invalid(self):
         """Test parsing invalid dblp hit"""

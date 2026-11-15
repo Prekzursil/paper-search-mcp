@@ -4,12 +4,9 @@ from datetime import datetime
 import requests
 import logging
 import json
-import xml.etree.ElementTree as ET
-from urllib.parse import quote, urlencode
-from requests.exceptions import SSLError
-import urllib3
 
 from ..paper import Paper
+from ..utils import url_host_matches
 from ..utils import extract_doi
 from ..config import get_env
 from .base import PaperSource
@@ -45,17 +42,11 @@ class CiteSeerXSearcher(PaperSource):
     def _get(self, url: str, **kwargs) -> requests.Response:
         """GET wrapper with SSL fallback and archive-redirect detection."""
         kwargs.setdefault('timeout', 30)
-        try:
-            resp = self.session.get(url, **kwargs)
-        except SSLError:
-            logger.warning("CiteSeerX SSL verification failed; retrying without cert verification")
-            kwargs['verify'] = False
-            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-            resp = self.session.get(url, **kwargs)
+        resp = self.session.get(url, **kwargs)
 
         # If the endpoint redirected to the Wayback Machine the original host
         # is no longer serving live API responses; treat this as unavailable.
-        if "web.archive.org" in resp.url:
+        if url_host_matches(resp.url, "web.archive.org"):
             raise requests.HTTPError(
                 f"CiteSeerX endpoint redirected to web archive ({resp.url}); "
                 "the live API is currently unavailable.",
@@ -195,7 +186,7 @@ class CiteSeerXSearcher(PaperSource):
                 try:
                     published_date = datetime(int(year), 1, 1)
                 except ValueError:
-                    pass
+                    published_date = None
 
             # Extract venue
             venue = info.get('venue', '')

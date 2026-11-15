@@ -14,7 +14,6 @@ import logging
 import time
 from urllib.parse import quote
 from ..paper import Paper
-from ..utils import extract_doi
 from ..config import get_env
 from .base import PaperSource
 
@@ -270,7 +269,7 @@ class DOAJSearcher(PaperSource):
                     try:
                         published_date = datetime(int(year), 1, 1)
                     except (ValueError, TypeError):
-                        pass
+                        published_date = None
 
             # Extract journal information
             journal = bibjson.get('journal', {})
@@ -448,7 +447,6 @@ class DOAJSearcher(PaperSource):
 
 if __name__ == "__main__":
     """Test the DOAJSearcher."""
-    import logging
     logging.basicConfig(level=logging.INFO)
 
     # Test with and without API key

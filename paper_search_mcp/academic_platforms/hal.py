@@ -206,7 +206,7 @@ class HALSearcher(PaperSource):
             if head.status_code == 200:
                 return candidate
         except Exception:
-            pass
+            return ""
         return ""
 
     def _parse_doc(self, doc: Dict[str, Any]) -> Optional[Paper]:

@@ -1,5 +1,4 @@
 import unittest
-import os
 import requests
 from paper_search_mcp.academic_platforms.google_scholar import GoogleScholarSearcher
 
@@ -8,7 +7,7 @@ def check_scholar_accessible():
     try:
         response = requests.get("https://scholar.google.com", timeout=5)
         return response.status_code == 200
-    except:
+    except Exception:
         return False
 
 class TestGoogleScholarSearcher(unittest.TestCase):
@@ -34,7 +33,7 @@ class TestGoogleScholarSearcher(unittest.TestCase):
             print(f"\n{i}. {paper.title}")
             print(f"   Authors: {', '.join(paper.authors)}")
             print(f"   Citations: {paper.citations}")
-        self.assertTrue(len(papers) > 0)
+        self.assertGreater(len(papers), 0)
         self.assertTrue(papers[0].title)
 
     def test_download_pdf_not_supported(self):

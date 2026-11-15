@@ -1,5 +1,5 @@
 # paper_search_mcp/academic_platforms/dblp.py
-from typing import List, Optional, Dict, Any
+from typing import List, Optional
 from datetime import datetime
 import requests
 import logging
@@ -8,6 +8,7 @@ import time
 from bs4 import BeautifulSoup
 
 from ..paper import Paper
+from ..utils import doi_from_url
 from ..utils import extract_doi
 from .base import PaperSource
 
@@ -123,8 +124,6 @@ class DBLPSearcher(PaperSource):
         except Exception as e:
             logger.error(f"Unexpected error in dblp search: {e}")
             return self._search_html_fallback(query=query, max_results=max_results)
-
-        return papers
 
     def _search_html_fallback(self, query: str, max_results: int) -> List[Paper]:
         """Fallback search via dblp HTML endpoint when API is unavailable."""
@@ -257,8 +256,8 @@ class DBLPSearcher(PaperSource):
             ee_elems = info.findall('ee')
             for ee_elem in ee_elems:
                 ee_text = ee_elem.text.strip() if ee_elem.text else ""
-                if 'doi.org' in ee_text:
-                    doi = ee_text.split('doi.org/')[-1]
+                doi = doi_from_url(ee_text)
+                if doi:
                     break
                 elif ee_text.startswith('10.'):
                     doi = ee_text
@@ -277,7 +276,7 @@ class DBLPSearcher(PaperSource):
                 try:
                     published_date = datetime(int(year_str), 1, 1)
                 except ValueError:
-                    pass
+                    published_date = None
 
             # Construct paper ID (use dblp key if available, otherwise generate)
             paper_id = ""

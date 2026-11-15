@@ -4,7 +4,6 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import random
-import re
 from ..paper import Paper
 from ..utils import extract_doi
 from ..config import get_env

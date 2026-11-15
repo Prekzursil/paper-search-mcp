@@ -118,6 +118,7 @@ class MedRxivSearcher(PaperSource):
                 if tries == self.max_retries:
                     raise Exception(f"Failed to download PDF after {self.max_retries} attempts: {e}")
                 print(f"Attempt {tries} failed, retrying...")
+        raise Exception(f"Failed to download PDF after {self.max_retries} attempts: exhausted retries")
     
     def read_paper(self, paper_id: str, save_path: str = "./downloads") -> str:
         """

@@ -8,7 +8,7 @@ def check_api_accessible():
     try:
         response = requests.get("https://api.medRxiv.org/details/medrxiv/0/1", timeout=5)
         return response.status_code == 200
-    except:
+    except Exception:
         return False
 
 class TestMedRxivSearcher(unittest.TestCase):
@@ -29,7 +29,7 @@ class TestMedRxivSearcher(unittest.TestCase):
         print(f"Found {len(papers)} papers for query 'machine learning':")
         for i, paper in enumerate(papers, 1):
             print(f"{i}. {paper.title} (ID: {paper.paper_id})")
-        self.assertTrue(len(papers) > 0)
+        self.assertGreater(len(papers), 0)
         self.assertTrue(papers[0].title)
 
     def test_download_and_read(self):
@@ -55,7 +55,7 @@ class TestMedRxivSearcher(unittest.TestCase):
             self.assertTrue(os.path.exists(pdf_path))
             
             text_content = self.searcher.read_paper(paper.paper_id, save_path)
-            self.assertTrue(len(text_content) > 0)
+            self.assertGreater(len(text_content), 0)
         finally:
             if pdf_path and os.path.exists(pdf_path):
                 os.remove(pdf_path)

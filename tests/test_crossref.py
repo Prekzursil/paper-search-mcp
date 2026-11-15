@@ -1,6 +1,5 @@
 # tests/test_crossref.py
 import unittest
-import os
 import requests
 from paper_search_mcp.academic_platforms.crossref import CrossRefSearcher
 
@@ -10,7 +9,7 @@ def check_api_accessible():
     try:
         response = requests.get("https://api.crossref.org/works?sample=1", timeout=5)
         return response.status_code == 200
-    except:
+    except Exception:
         return False
 
 class TestCrossRefSearcher(unittest.TestCase):
@@ -38,7 +37,7 @@ class TestCrossRefSearcher(unittest.TestCase):
                 print(f"   Publisher: {paper.extra.get('publisher', 'N/A')}")
                 print(f"   Type: {paper.extra.get('crossref_type', 'N/A')}")
             print()
-        self.assertTrue(len(papers) > 0)
+        self.assertGreater(len(papers), 0)
         if papers:
             self.assertTrue(papers[0].title)
             self.assertTrue(papers[0].doi)
@@ -54,7 +53,7 @@ class TestCrossRefSearcher(unittest.TestCase):
             filter="from-pub-date:2020,has-full-text:true"
         )
         print(f"Found {len(papers)} papers with filters")
-        self.assertTrue(len(papers) >= 0)  # May return 0 if no papers match filters
+        self.assertGreaterEqual(len(papers), 0)  # May return 0 if no papers match filters
 
     def test_get_paper_by_doi(self):
         if not self.api_accessible:

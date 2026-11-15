@@ -123,7 +123,7 @@ class OpenAlexSearcher(PaperSource):
                     try:
                         published_date = datetime.strptime(pub_date_str, "%Y-%m-%d")
                     except ValueError:
-                        pass
+                        published_date = None
 
                 # Categories / Concepts
                 concepts = [

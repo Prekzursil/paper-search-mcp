@@ -1,8 +1,6 @@
 # tests/test_openaire.py
 import unittest
-import os
 import requests
-import urllib3
 from paper_search_mcp.academic_platforms.openaire import OpenAiresearcher
 
 
@@ -17,17 +15,8 @@ def check_api_accessible():
         )
         return response.status_code == 200
     except requests.exceptions.SSLError:
-        try:
-            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-            response = requests.get(
-                "https://api.openaire.eu/search/researchProducts",
-                params={'keywords': 'test', 'size': 1, 'page': 0},
-                timeout=15,
-                verify=False,
-            )
-            return response.status_code == 200
-        except Exception:
-            return False
+        # Do not retry with certificate verification disabled; treat as unavailable.
+        return False
     except Exception:
         return False
 
@@ -59,7 +48,7 @@ class TestOpenAiresearcher(unittest.TestCase):
             print(f"   URL: {paper.url}")
             print()
 
-        self.assertTrue(len(papers) > 0)
+        self.assertGreater(len(papers), 0)
         if papers:
             self.assertTrue(papers[0].title)
             self.assertEqual(papers[0].source, 'openaire')
@@ -80,7 +69,7 @@ class TestOpenAiresearcher(unittest.TestCase):
                 year = paper.published_date.year if paper.published_date else 'N/A'
                 print(f"Paper '{paper.title}' published in {year}")
 
-        self.assertTrue(len(papers) >= 0)  # May return 0 if no papers match
+        self.assertGreaterEqual(len(papers), 0)  # May return 0 if no papers match
 
     def test_search_with_open_access_filter(self):
         if not self.api_accessible:
@@ -97,7 +86,7 @@ class TestOpenAiresearcher(unittest.TestCase):
             open_access_count = sum(1 for paper in papers if paper.extra.get('open_access'))
             print(f"{open_access_count} out of {len(papers)} papers are open access")
 
-        self.assertTrue(len(papers) >= 0)
+        self.assertGreaterEqual(len(papers), 0)
 
     def test_search_with_date_range(self):
         if not self.api_accessible:
@@ -116,7 +105,7 @@ class TestOpenAiresearcher(unittest.TestCase):
                 year = paper.published_date.year if paper.published_date else 'N/A'
                 print(f"Paper '{paper.title}' published in {year}")
 
-        self.assertTrue(len(papers) >= 0)
+        self.assertGreaterEqual(len(papers), 0)
 
     def test_download_pdf_not_implemented(self):
         """Test that PDF download raises NotImplementedError"""
@@ -150,7 +139,7 @@ class TestOpenAiresearcher(unittest.TestCase):
                 print(f"  First paper: {papers[0].title}")
                 if papers[0].extra.get('project_id'):
                     print(f"  Project ID: {papers[0].extra.get('project_id')}")
-            self.assertTrue(len(papers) >= 0)
+            self.assertGreaterEqual(len(papers), 0)
 
     def test_search_with_language_filter(self):
         if not self.api_accessible:
@@ -169,7 +158,7 @@ class TestOpenAiresearcher(unittest.TestCase):
                 language = paper.extra.get('language', 'N/A')
                 print(f"Paper '{paper.title}' language: {language}")
 
-        self.assertTrue(len(papers) >= 0)
+        self.assertGreaterEqual(len(papers), 0)
 
     def test_parse_openaire_result_invalid(self):
         """Test parsing invalid OpenAIRE result"""

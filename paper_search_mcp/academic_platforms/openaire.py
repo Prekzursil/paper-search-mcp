@@ -557,7 +557,7 @@ class OpenAiresearcher(PaperSource):
                         try:
                             published_date = datetime.strptime(date_str[:10], '%Y-%m-%d')
                         except ValueError:
-                            pass
+                            published_date = None
 
             # Extract URLs
             url = ''

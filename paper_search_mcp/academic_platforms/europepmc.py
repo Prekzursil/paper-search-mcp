@@ -154,7 +154,7 @@ class EuropePMCSearcher(PaperSource):
                     try:
                         pub_date = datetime.strptime(pub_year, '%Y')
                     except ValueError:
-                        pass
+                        pub_date = None
 
             # Extract URLs
             url = item.get('fullTextUrlList', {}).get('fullTextUrl', [])

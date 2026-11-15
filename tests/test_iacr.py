@@ -9,7 +9,7 @@ def check_iacr_accessible():
     try:
         response = requests.get("https://eprint.iacr.org", timeout=5)
         return response.status_code == 200
-    except:
+    except Exception:
         return False
 
 
@@ -101,7 +101,6 @@ class TestIACRSearcher(unittest.TestCase):
         except Exception as e:
             print(f"Exception during PDF download test: {e}")
             # Don't fail the test for network issues
-            pass
         finally:
             # Clean up temporary directory
             if os.path.exists(test_dir):
@@ -162,7 +161,6 @@ class TestIACRSearcher(unittest.TestCase):
         except Exception as e:
             print(f"Exception during read_paper test: {e}")
             # Don't fail the test for network issues
-            pass
         finally:
             # Clean up temporary directory
             if os.path.exists(test_dir):

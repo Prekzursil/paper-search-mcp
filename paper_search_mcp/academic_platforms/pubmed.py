@@ -6,7 +6,6 @@ from datetime import datetime
 from ..paper import Paper
 from ..utils import extract_doi
 from .base import PaperSource
-import os
 
 class PubMedSearcher(PaperSource):
     """Searcher for PubMed papers"""
@@ -148,7 +147,7 @@ if __name__ == "__main__":
         print("\nTesting PDF download functionality...")
         paper_id = papers[0].paper_id
         try:
-            pdf_path = searcher.download_pdf(paper_id, "./downloads")
+            searcher.download_pdf(paper_id, "./downloads")
         except NotImplementedError as e:
             print(f"Expected error: {e}")
     

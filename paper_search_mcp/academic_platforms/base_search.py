@@ -9,10 +9,12 @@ OAI-PMH Endpoint: https://api.base-search.net/cgi-bin/BaseHttpSearchInterface.fc
 Documentation: https://www.base-search.net/about/en/about_sources_date.php
 """
 
-from typing import List, Optional, Dict, Any
+from typing import List, Dict, Any
 import logging
 from .oaipmh import OAIPMHSearcher
 from ..paper import Paper
+from ..utils import url_host_matches
+from ..utils import url_host_matches
 
 logger = logging.getLogger(__name__)
 
@@ -123,11 +125,11 @@ class BASESearcher(OAIPMHSearcher):
         for ident_elem in identifiers:
             if ident_elem.text:
                 ident_text = ident_elem.text.lower()
-                if 'base-search.net' in ident_text:
+                if url_host_matches(ident_text, 'base-search.net'):
                     paper.extra['base_id'] = ident_text
                 elif 'urn:nbn:' in ident_text:
                     paper.extra['urn'] = ident_text
-                elif 'hdl.handle.net' in ident_text:
+                elif url_host_matches(ident_text, 'hdl.handle.net'):
                     paper.extra['handle'] = ident_text
 
         # Extract rights information
@@ -225,7 +227,6 @@ class BASESearcher(OAIPMHSearcher):
 
 if __name__ == "__main__":
     """Test the BASESearcher."""
-    import logging
     logging.basicConfig(level=logging.INFO)
 
     searcher = BASESearcher()

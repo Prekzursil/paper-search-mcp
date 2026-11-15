@@ -367,7 +367,7 @@ class IACRSearcher(PaperSource):
             try:
                 keyword_elements = soup.select("a.badge.bg-secondary.keyword")
                 keywords = [elem.get_text(strip=True) for elem in keyword_elements]
-            except:
+            except Exception:
                 keywords = []
 
             # Find history entries
@@ -388,7 +388,7 @@ class IACRSearcher(PaperSource):
                         try:
                             last_updated = datetime.strptime(date_str, "%Y-%m-%d")
                         except ValueError:
-                            pass
+                            last_updated = None
                 elif history_found and (
                     line.strip().startswith("Short URL")
                     or line.strip().startswith("License")

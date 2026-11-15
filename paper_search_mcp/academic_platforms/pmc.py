@@ -239,7 +239,7 @@ class PMCSearcher(PaperSource):
                         try:
                             pub_date = datetime.strptime(year, '%Y')
                         except ValueError:
-                            pass
+                            pub_date = None
 
             # Construct URLs
             url = f"https://www.ncbi.nlm.nih.gov/pmc/articles/{pmcid}/"

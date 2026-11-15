@@ -29,10 +29,7 @@ from .academic_platforms.unpaywall import UnpaywallResolver, UnpaywallSearcher
 from .academic_platforms.zenodo import ZenodoSearcher
 from .academic_platforms.hal import HALSearcher
 from .academic_platforms.ssrn import SSRNSearcher
-from .utils import extract_doi
-
 # from .academic_platforms.hub import SciHubSearcher
-from .paper import Paper
 
 # Initialize MCP server
 mcp = FastMCP("paper_search_server")

@@ -13,7 +13,7 @@ def check_semantic_accessible():
     try:
         response = requests.get("https://api.semanticscholar.org/graph/v1/paper/5bbfdf2e62f0508c65ba6de9c72fe2066fd98138", timeout=5)
         return response.status_code == 200
-    except:
+    except Exception:
         return False
 
 
@@ -140,7 +140,6 @@ class TestSemanticSearcher(unittest.TestCase):
         except Exception as e:
             print(f"Exception during PDF download test: {e}")
             # Don't fail the test for network issues
-            pass
         finally:
             # Clean up temporary directory
             if os.path.exists(test_dir):
@@ -201,7 +200,6 @@ class TestSemanticSearcher(unittest.TestCase):
         except Exception as e:
             print(f"Exception during read_paper test: {e}")
             # Don't fail the test for network issues
-            pass
         finally:
             # Clean up temporary directory
             if os.path.exists(test_dir):
