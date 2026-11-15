@@ -46,7 +46,12 @@ class TestBioRxivSearcher(unittest.TestCase):
         pdf_path = None
         
         try:
-            pdf_path = self.searcher.download_pdf(paper.paper_id, save_path)
+            try:
+                pdf_path = self.searcher.download_pdf(paper.paper_id, save_path)
+            except Exception as e:
+                if "429" in str(e):
+                    self.skipTest(f"upstream rate-limited the PDF download (429): {e}")
+                raise
             self.assertTrue(os.path.exists(pdf_path))
             
             text_content = self.searcher.read_paper(paper.paper_id, save_path)
