@@ -7,7 +7,7 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-_ENV_LOADED = False
+_env_state = {"loaded": False}
 ENV_PREFIX = "PAPER_SEARCH_MCP_"
 
 
@@ -52,9 +52,7 @@ def _load_env_from_file(env_file: Path) -> None:
 
 
 def load_env_file(force: bool = False) -> None:
-    global _ENV_LOADED
-
-    if _ENV_LOADED and not force:
+    if _env_state["loaded"] and not force:
         return
 
     for env_file in _candidate_env_files():
@@ -68,7 +66,7 @@ def load_env_file(force: bool = False) -> None:
         except Exception as exc:
             logger.warning("Failed to load environment file %s: %s", env_file, exc)
 
-    _ENV_LOADED = True
+    _env_state["loaded"] = True
 
 
 def get_env(name: str, default: Optional[str] = "") -> str:

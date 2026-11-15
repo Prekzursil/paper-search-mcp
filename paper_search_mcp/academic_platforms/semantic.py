@@ -2,10 +2,10 @@ from typing import List, Optional
 from datetime import datetime
 import os
 import requests
-from bs4 import BeautifulSoup
 import time
 import random
 from ..paper import Paper
+from ..utils import url_host_matches
 from ..utils import extract_doi
 from .base import PaperSource
 import logging
@@ -69,14 +69,14 @@ class SemanticSearcher(PaperSource):
         if not all_urls:
             return ""
 
-        doi_urls = [url for url in all_urls if "doi.org" in url]
+        doi_urls = [url for url in all_urls if url_host_matches(url, "doi.org")]
         if doi_urls:
             return doi_urls[0]
 
-        non_unpaywall_urls = [url for url in all_urls if "unpaywall.org" not in url]
+        non_unpaywall_urls = [url for url in all_urls if not url_host_matches(url, "unpaywall.org")]
         if non_unpaywall_urls:
             url = non_unpaywall_urls[0]
-            if "arxiv.org/abs/" in url:
+            if url_host_matches(url, "arxiv.org"):
                 pdf_url = url.replace("/abs/", "/pdf/")
                 return pdf_url
             return url

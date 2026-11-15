@@ -7,7 +7,7 @@ and archive service for unpublished preprints in chemistry and related fields.
 This searcher uses the Crossref API filtered for ChemRxiv preprints.
 """
 
-from typing import List, Optional
+from typing import List
 import logging
 from .crossref import CrossRefSearcher
 from ..paper import Paper
@@ -41,16 +41,6 @@ class ChemRxivSearcher(CrossRefSearcher):
         """
         # Build Crossref filter for ChemRxiv preprints
         base_filter = f"type:posted-content,from-publisher:{self.preprint_server}"
-
-        # Add subject filter for chemistry if not already specified
-        if 'subject' not in kwargs:
-            # Chemistry-related subjects
-            chemistry_subjects = [
-                'chemistry', 'chemical', 'biochemistry', 'organic chemistry',
-                'inorganic chemistry', 'physical chemistry', 'analytical chemistry'
-            ]
-            # But we'll let Crossref handle subject filtering
-            pass
 
         # Update kwargs with ChemRxiv-specific filter
         if 'filter' in kwargs:
@@ -154,7 +144,6 @@ class ChemRxivSearcher(CrossRefSearcher):
 
 if __name__ == "__main__":
     """Test the ChemRxivSearcher."""
-    import logging
     logging.basicConfig(level=logging.INFO)
 
     searcher = ChemRxivSearcher()

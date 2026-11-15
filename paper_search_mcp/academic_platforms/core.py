@@ -207,7 +207,7 @@ class CORESearcher(PaperSource):
                         if year.isdigit():
                             pub_date = datetime(int(year), 1, 1)
                     except Exception:
-                        pass
+                        pub_date = None
 
             # Extract URLs
             url = item.get('url', '')

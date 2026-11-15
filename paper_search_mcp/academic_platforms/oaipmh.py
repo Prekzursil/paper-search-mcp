@@ -7,13 +7,14 @@ This base class provides common functionality for platforms that support
 OAI-PMH, such as BASE and CiteSeerX.
 """
 
-from typing import List, Optional, Dict, Any
+from typing import List, Optional
 from datetime import datetime
 import requests
 import xml.etree.ElementTree as ET
 import time
 import logging
 from ..paper import Paper
+from ..utils import url_host_matches
 from .base import PaperSource
 
 logger = logging.getLogger(__name__)
@@ -93,8 +94,6 @@ class OAIPMHSearcher(PaperSource):
         # For simple text queries, we need to filter after retrieval
         # OAI-PMH doesn't support full-text search directly
         # We'll retrieve records and filter locally
-        retry_count = 0
-        max_retries = 3
         resumption_token = None
 
         try:
@@ -224,7 +223,7 @@ class OAIPMHSearcher(PaperSource):
             doi = ''
             identifier_elems = dc_root.findall(f'{{{DC_NS}}}identifier') or dc_root.findall('identifier')
             for elem in identifier_elems:
-                if elem.text and 'doi.org' in elem.text.lower():
+                if elem.text and url_host_matches(elem.text.lower(), 'doi.org'):
                     doi = elem.text
                     break
 
@@ -443,7 +442,6 @@ class OAIPMHSearcher(PaperSource):
 
 if __name__ == "__main__":
     """Test the OAIPMHSearcher base class."""
-    import logging
     logging.basicConfig(level=logging.INFO)
 
     # Test with a known OAI-PMH repository

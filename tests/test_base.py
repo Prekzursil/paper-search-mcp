@@ -37,7 +37,7 @@ class TestBASESearcher(unittest.TestCase):
 
         papers = self.searcher.search("machine learning", max_results=3)
         self.assertIsInstance(papers, list)
-        self.assertTrue(len(papers) >= 0)
+        self.assertGreaterEqual(len(papers), 0)
 
         if papers:
             first = papers[0]
